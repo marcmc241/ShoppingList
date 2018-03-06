@@ -49,9 +49,11 @@ public class activity_shopping_list extends AppCompatActivity {
 
     public void onAddItem(View view) {
         String item = new_item.getText().toString();
-        items.add(item);
-        adapter.notifyDataSetChanged();//li diem a l'adapter que les dades han canviat, que actualitzi la llista
-        new_item.setText("");//esborrem el text
-        list.smoothScrollToPosition(items.size()-1);//fes scroll fins a l'última posició (nou element)
+        if(!item.isEmpty()){
+            items.add(item);
+            adapter.notifyDataSetChanged();//li diem a l'adapter que les dades han canviat, que actualitzi la llista
+            new_item.setText("");//esborrem el text
+            list.smoothScrollToPosition(items.size()-1);//fes scroll fins a l'última posició (nou element)
+        }
     }
 }
