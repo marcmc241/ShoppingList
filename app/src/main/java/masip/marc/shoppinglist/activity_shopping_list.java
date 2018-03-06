@@ -1,5 +1,7 @@
 package masip.marc.shoppinglist;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class activity_shopping_list extends AppCompatActivity {
 
@@ -36,15 +39,26 @@ public class activity_shopping_list extends AppCompatActivity {
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int pos, long l) {
+
                 onRemoveItem(pos);
                 return true;
             }
         });
     }
 
-    private void onRemoveItem(int pos) {
-        items.remove(pos);//eliminem el item de la posició pos
-        adapter.notifyDataSetChanged();//notifiquem el canvi
+    private void onRemoveItem(final int pos) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.confirm);
+        builder.setMessage(String.format(Locale.getDefault(), "Estàs segur que vols esborrar '%s'?", items.get(pos)));
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i){
+                items.remove(pos);//eliminem el item de la posició pos
+                adapter.notifyDataSetChanged();//notifiquem el canvi
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, null);
+        builder.create().show();
     }
 
     public void onAddItem(View view) {
