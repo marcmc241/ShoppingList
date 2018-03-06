@@ -3,6 +3,7 @@ package masip.marc.shoppinglist;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -31,6 +32,19 @@ public class activity_shopping_list extends AppCompatActivity {
         adapter = new ShoppingListAdapter(this, R.layout.shopping_item, items);
 
         list.setAdapter(adapter);
+
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int pos, long l) {
+                onRemoveItem(pos);
+                return true;
+            }
+        });
+    }
+
+    private void onRemoveItem(int pos) {
+        items.remove(pos);//eliminem el item de la posició pos
+        adapter.notifyDataSetChanged();//notifiquem el canvi
     }
 
     public void onAddItem(View view) {
