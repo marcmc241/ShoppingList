@@ -15,7 +15,7 @@ import java.util.Locale;
 public class activity_shopping_list extends AppCompatActivity {
 
     private ListView list;
-    private ArrayList<String> items; //model de dades
+    private ArrayList<ShoppingItem> items; //model de dades
     private ShoppingListAdapter adapter;
     private EditText new_item;
 
@@ -26,15 +26,23 @@ public class activity_shopping_list extends AppCompatActivity {
 
         //omplim el model de dades
         items = new ArrayList<>();
-        items.add("Patates");
-        items.add("Paper WC");
-        items.add("Ketchup");
+        items.add(new ShoppingItem("Patates"));
+        items.add(new ShoppingItem("Paper WC"));
+        items.add(new ShoppingItem("Ketchup"));
 
         list = (ListView) findViewById(R.id.list);
         new_item = (EditText) findViewById(R.id.new_item);//caixa text
         adapter = new ShoppingListAdapter(this, R.layout.shopping_item, items);
 
         list.setAdapter(adapter);
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {//ctrl + spacebar
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
+                items.get(pos).toggleChecked();
+                adapter.notifyDataSetChanged();
+            }
+        });
 
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -49,7 +57,11 @@ public class activity_shopping_list extends AppCompatActivity {
     private void onRemoveItem(final int pos) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.confirm);
-        builder.setMessage(String.format(Locale.getDefault(), "Estàs segur que vols esborrar '%s'?", items.get(pos)));
+        builder.setMessage(
+                String.format(
+                        Locale.getDefault(), "Estàs segur que vols esborrar '%s'?",
+                        items.get(pos).getText()
+                ));
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialogInterface, int i){
@@ -64,7 +76,7 @@ public class activity_shopping_list extends AppCompatActivity {
     public void onAddItem(View view) {
         String item = new_item.getText().toString();
         if(!item.isEmpty()){
-            items.add(item);
+            items.add(new ShoppingItem(item));
             adapter.notifyDataSetChanged();//li diem a l'adapter que les dades han canviat, que actualitzi la llista
             new_item.setText("");//esborrem el text
             list.smoothScrollToPosition(items.size()-1);//fes scroll fins a l'última posició (nou element)
