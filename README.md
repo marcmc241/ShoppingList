@@ -1,0 +1,2 @@
+# ShoppingList
+Educational project
